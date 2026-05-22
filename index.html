@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresa Pop - Red Absoluta</title>
+    <style>
+        /* ESTILOS PREMIUM OSCUROS */
+        body {
+            background-color: #0b0b0b;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #161616;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #252525;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            color: #ff3366;
+            margin: 0;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
+        }
+
+        .perfil-rapido {
+            background-color: #121212;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #202020;
+            flex-shrink: 0;
+        }
+
+        .avatar-perfil {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #ff3366;
+            object-fit: cover;
+        }
+
+        .perfil-info input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .contenedor-principal {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .seccion {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+            max-width: 500px;
+            width: 95%;
+            margin: 0 auto;
+            box-sizing: border-box;
+            padding-bottom: 160px; /* Espacio extra para que no tape las entradas */
+        }
+
+        .seccion.activa {
+            display: flex;
+        }
+
+        /* ESTILOS: MURO */
+        .post {
+            background: linear-gradient(145deg, #181818, #202020);
+            padding: 15px;
+            border-radius: 18px;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .post .autor-zona {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .post .autor-name {
+            color: #ff3366;
+            font-weight: bold;
+        }
+
+        .post .fecha {
+            color: #666;
+            font-size: 0.75rem;
+            margin-left: auto;
+        }
+
+        .post .contenido {
+            color: #dddddd;
+            font-size: 1rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .post .media-content {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+            max-height: 320px;
+            object-fit: cover;
+        }
+
+        .post-acciones {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #282828;
+        }
+
+        .btn-like {
+            background: transparent;
+            border: none;
+            color: #ff3366;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ESTILOS: CHATS */
+        .burbuja-chat {
+            max-width: 78%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 4px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .burbuja-chat.izquierda {
+            background-color: #222;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .burbuja-chat.derecha {
+            background-color: #ff3366;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-user {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #ffccd5;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* ESTILOS: POPREELS */
+        .reel-container {
+            width: 100%;
+            height: 65vh;
+            background-color: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #252525;
+        }
+
+        .reel-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reel-info {
+            position: absolute;
+            bottom: 20px;
+            left: 15px;
+            right: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .reel-info .user {
+            color: #ff3366;
+            font-weight: bold;
+        }
+
+        /* BARRAS DE ENTRADA INFERIORES */
+        .barra-inferior-input {
+            position: fixed;
+            bottom: 65px;
+            left: 0;
+            right: 0;
+            background-color: #161616;
+            padding: 10px 15px;
+            border-top: 1px solid #252525;
+            display: none;
+            justify-content: center;
+            z-index: 99;
+        }
+
+        .barra-inferior-input.activa {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-wrapper-horizontal {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .input-text {
+            flex: 1;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 10px 15px;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-enviar {
+            background-color: #ff3366;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* BARRA DE NAVEGACIÓN FIJA */
+        .nav-inferior {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #161616;
+            border-top: 1px solid #252525;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item.activo {
+            color: #ff3366;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1 id="tituloApp">Fresa Pop 🍓</h1>
+    </div>
+
+    <div class="perfil-rapido">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="avatar-perfil">
+        <div class="perfil-info">
+            <small style="color: #666; display: block;">Tu Identidad Fresa:</small>
+            <input type="text" id="nombreUsuario" value="Douglas" onchange="guardarNombreLocal(this.value)">
+        </div>
+    </div>
+
+    <div class="contenedor-principal">
+        <div class="seccion activa" id="sec-muro">
+            <div style="text-align: center; color: #666; margin-top: 30px;">Cargando Muro de Fresa Pop...</div>
+        </div>
+
+        <div class="seccion" id="sec-chats">
+            <div style="text-align: center; color: #666; margin-top: 30px;">Cargando mensajes en vivo...</div>
+        </div>
+
+        <div class="seccion" id="sec-reels">
+            <div style="text-align: center; color: #666; margin-bottom: 10px;">🔥 Reels de la Comunidad</div>
+            <div class="reel-container">
+                <video id="reelsVideoPlayer" class="reel-video" src="https://assets.mixkit.co/videos/preview/mixkit-neon-light-from-a-tunnel-41865-large.mp4" controls loop autoplay muted></video>
+                <div class="reel-info">
+                    <div class="user" id="reelAutor">@FresaPop_Oficial</div>
+                    <div id="reelTexto" style="font-size: 0.9rem; color: #eee;">¡PopReels activos! 🔥💥</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="barra-inferior-input activa" id="input-muro">
+        <input type="text" id="textoPost" class="input-text" placeholder="¿Qué vas a publicar hoy?">
+        <input type="text" id="urlMedia" class="input-text" placeholder="Enlace de Imagen/Video (Opcional)...">
+        <button class="btn-enviar" id="btnPublicar">Publicar</button>
+    </div>
+
+    <div class="barra-inferior-input" id="input-chat">
+        <div class="input-wrapper-horizontal">
+            <input type="text" id="textoMensaje" class="input-text" placeholder="Escribe un mensaje privado...">
+            <button class="btn-enviar" id="btnEnviarChat">Enviar</button>
+        </div>
+    </div>
+
+    <div class="barra-inferior-input" id="input-reels">
+        <div class="input-wrapper-horizontal">
+            <input type="text" id="urlReel" class="input-text" placeholder="Enlace de video corto (.mp4)...">
+            <button class="btn-enviar" id="btnSubirReel">Subir Reel</button>
+        </div>
+    </div>
+
+    <div class="nav-inferior">
+        <button class="nav-item activo" id="btn-nav-muro" onclick="cambiarPestaña('muro')">🏠<br>Inicio</button>
+        <button class="nav-item" id="btn-nav-chats" onclick="cambiarPestaña('chats')">💬<br>Chats</button>
+        <button class="nav-item" id="btn-nav-reels" onclick="cambiarPestaña('reels')">🔥<br>PopReels</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-yTbMknmP6PXgF9SjDjtXM_lT5ZfLd2E",
+            authDomain: "fresa-pop.firebaseapp.com",
+            projectId: "fresa-pop",
+            storageBucket: "fresa-pop.appspot.com",
+            messagingSenderId: "569498732262",
+            appId: "1:569498732262:web:48d193e7df5d4ae61c6b6a",
+            measurementId: "G-BCBRJ9KW6J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const postsRef = collection(db, "publicaciones");
+        const chatsRef = collection(db, "chats");
+        const reelsRef = collection(db, "reels");
+
+        // Guardado de nombre
+        if(localStorage.getItem("fresapop_name")) {
+            document.getElementById("nombreUsuario").value = localStorage.getItem("fresapop_name");
+        }
+        window.guardarNombreLocal = function(valor) {
+            localStorage.setItem("fresapop_name", valor);
+        }
+
+        // CONTROLADOR DE PESTAÑAS GLOBAL
+        window.cambiarPestaña = function(pestaña) {
+            document.getElementById("sec-muro").classList.remove("activa");
+            document.getElementById("sec-chats").classList.remove("activa");
+            document.getElementById("sec-reels").classList.remove("activa");
+            document.getElementById("input-muro").classList.remove("activa");
+            document.getElementById("input-chat").classList.remove("activa");
+            document.getElementById("input-reels").classList.remove("activa");
+            
+            document.getElementById("btn-nav-muro").classList.remove("activo");
+            document.getElementById("btn-nav-chats").classList.remove("activo");
+            document.getElementById("btn-nav-reels").classList.remove("activo");
+
+            if(pestaña === 'muro') {
+                document.getElementById("sec-muro").classList.add("activa");
+                document.getElementById("input-muro").classList.add("activa");
+                document.getElementById("btn-nav-muro").classList.add("activo");
+                document.getElementById("tituloApp").innerText = "Fresa Pop 🍓";
+            } else if(pestaña === 'chats') {
+                document.getElementById("sec-chats").classList.add("activa");
+                document.getElementById("input-chat").classList.add("activa");
+                document.getElementById("btn-nav-chats").classList.add("activo");
+                document.getElementById("tituloApp").innerText = "Sala de Chat 💬";
+            } else if(pestaña === 'reels') {
+                document.getElementById("sec-reels").classList.add("activa");
+                document.getElementById("input-reels").classList.add("activa");
+                document.getElementById("btn-nav-reels").classList.add("activo");
+                document.getElementById("tituloApp").innerText = "PopReels 🔥";
+            }
+        }
+
+        // ESCUCHAR MURO
+        onSnapshot(query(postsRef, orderBy("fecha", "desc")), (snapshot) => {
+            const feed = document.getElementById("sec-muro");
+            feed.innerHTML = "";
+            if (snapshot.empty) {
+                feed.innerHTML = `<div style="text-align: center; color: #555; margin-top: 30px;">Muro vacío.</div>`;
+                return;
+            }
+            snapshot.forEach((postDoc) => {
+                const datos = postDoc.data();
+                const id = postDoc.id;
+                let mediaTag = "";
+                if(datos.mediaUrl) {
+                    if(datos.mediaUrl.includes(".mp4")) {
+                        mediaTag = `<video src="${datos.mediaUrl}" class="media-content" controls></video>`;
+                    } else {
+                        mediaTag = `<img src="${datos.mediaUrl}" class="media-content">`;
+                    }
+                }
+                const elementoPost = document.createElement("div");
+                elementoPost.className = "post";
+                elementoPost.innerHTML = `
+                    <div class="autor-zona">
+                        <span class="autor-name">${datos.autor}</span>
+                    </div>
+                    <div class="contenido">${datos.texto}</div>
+                    ${mediaTag}
+                    <div class="post-acciones">
+                        <button class="btn-like" onclick="darLike('${id}')">❤️ <span>${datos.likes || 0}</span> Me gusta</button>
+                    </div>
+                `;
+                feed.appendChild(elementoPost);
+            });
+        });
+
+        // ESCUCHAR CHAT
+        onSnapshot(query(chatsRef, orderBy("fecha", "asc")), (snapshot) => {
+            const contenedorChat = document.getElementById("sec-chats");
+            contenedorChat.innerHTML = "";
+            const miNombre = document.getElementById("nombreUsuario").value;
+
+            if (snapshot.empty) {
+                contenedorChat.innerHTML = `<div style="text-align: center; color: #555; margin-top: 30px;">Sin mensajes.</div>`;
+                return;
+            }
+            snapshot.forEach((msgDoc) => {
+                const datos = msgDoc.data();
+                const claseBurbuja = (datos.usuario === miNombre) ? "derecha" : "izquierda";
+                const burbuja = document.createElement("div");
+                burbuja.className = `burbuja-chat ${claseBurbuja}`;
+                burbuja.innerHTML = `<span class="chat-user">${datos.usuario}</span><div>${datos.mensaje}</div>`;
+                contenedorChat.appendChild(burbuja);
+            });
+            contenedorChat.scrollTop = contenedorChat.scrollHeight;
+        });
+
+        // ESCUCHAR REELS
+        onSnapshot(query(reelsRef, orderBy("fecha", "desc")), (snapshot) => {
+            if (!snapshot.empty) {
+                const primerReel = snapshot.docs[0].data();
+                document.getElementById("reelsVideoPlayer").src = primerReel.videoUrl;
+                document.getElementById("reelAutor").innerText = `@${primerReel.usuario}`;
+            }
+        });
+
+        // ASIGNACIÓN DE BOTONES PARA EVITAR ERRORES DE ACCESO
+        document.getElementById("btnPublicar").onclick = async function() {
+            const autor = document.getElementById("nombreUsuario").value;
+            const texto = document.getElementById("textoPost").value;
+            const mediaUrl = document.getElementById("urlMedia").value;
+            if (texto.trim() === "") return;
+            await addDoc(postsRef, { autor, texto, mediaUrl, likes: 0, fecha: Date.now() });
+            document.getElementById("textoPost").value = "";
+            document.getElementById("urlMedia").value = "";
+        };
+
+        document.getElementById("btnEnviarChat").onclick = async function() {
+            const usuario = document.getElementById("nombreUsuario").value;
+            const mensaje = document.getElementById("textoMensaje").value;
+            if (mensaje.trim() === "") return;
+            await addDoc(chatsRef, { usuario, mensaje, fecha: Date.now() });
+            document.getElementById("textoMensaje").value = "";
+        };
+
+        document.getElementById("btnSubirReel").onclick = async function() {
+            const usuario = document.getElementById("nombreUsuario").value;
+            const videoUrl = document.getElementById("urlReel").value;
+            if (videoUrl.trim() === "") return;
+            await addDoc(reelsRef, { usuario, videoUrl, fecha: Date.now() });
+            document.getElementById("urlReel").value = "";
+        };
+
+        window.darLike = async function(id) {
+            await updateDoc(doc(db, "publicaciones", id), { likes: increment(1) });
+        };
+    </script>
+</body>
+</html>
